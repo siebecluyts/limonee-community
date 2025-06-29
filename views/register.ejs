@@ -1,6 +1,9 @@
-<h2>Registreren</h2>
-<form method="POST">
-  <input name="email" placeholder="Email" required>
-  <input type="password" name="password" placeholder="Wachtwoord" required>
-  <button type="submit">Registreer</button>
-</form>
+<div class="container">
+  <h1>Registreren</h1>
+  <form method="POST" action="/register">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Wachtwoord" required>
+    <button type="submit">Registreren</button>
+  </form>
+  <p>Al een account? <a href="/login">Log in</a></p>
+</div>

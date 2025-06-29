@@ -1,11 +1,24 @@
 body {
-  font-family: sans-serif;
-  background: #fdfbe7;
-  color: #333;
-  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
 }
-input, button {
-  display: block;
-  margin: 1rem 0;
-  padding: 0.5rem;
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+form input, form button, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
 }

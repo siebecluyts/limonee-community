@@ -1,16 +1,14 @@
-<h1>Admin Dashboard</h1>
-<h2>Gebruikers</h2>
-<ul>
+<div class="container">
+  <h1>Admin Dashboard</h1>
   <% users.forEach(u => { %>
-    <li>
-      <%= u.email %>
+    <div>
+      <p><%= u.email %> <% if (u.is_admin) { %> (admin) <% } %></p>
       <% if (!u.is_admin) { %>
-        <form action="/make-admin/<%= u.id %>" method="POST" style="display:inline;">
-          <button>Maak admin</button>
+        <form method="POST" action="/make-admin/<%= u.id %>">
+          <button type="submit">Maak admin</button>
         </form>
-      <% } else { %>
-        (admin)
       <% } %>
-    </li>
+    </div>
   <% }) %>
-</ul>
+  <a href="/dashboard">← Terug</a>
+</div>

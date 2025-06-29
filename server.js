@@ -22,6 +22,8 @@ app.use(session({
   saveUninitialized: true
 }))
 
+// === ROUTES ===
+
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard')
   res.redirect('/login')
@@ -35,7 +37,7 @@ app.post('/register', async (req, res) => {
 
   const { error } = await supabase
     .from('users')
-    .insert([{ email, password: hashed }])
+    .insert([{ email, password: hashed, is_admin: false }])
 
   if (error) return res.send('Fout: ' + error.message)
   res.redirect('/login')
@@ -48,7 +50,7 @@ app.post('/login', async (req, res) => {
 
   const { data, error } = await supabase
     .from('users')
-    .select('*')
+    .select('id, email, password, is_admin')
     .eq('email', email)
     .single()
 
@@ -57,14 +59,18 @@ app.post('/login', async (req, res) => {
   const valid = await bcrypt.compare(password, data.password)
   if (!valid) return res.send('Wachtwoord fout')
 
-  req.session.user = { id: data.id, email: data.email }
+  req.session.user = {
+    id: data.id,
+    email: data.email,
+    is_admin: data.is_admin
+  }
+
   res.redirect('/dashboard')
 })
 
 app.get('/dashboard', async (req, res) => {
   if (!req.session.user) return res.redirect('/login')
 
-  // Posts ophalen met gebruiker en comments
   const { data: posts } = await supabase
     .from('posts')
     .select(`
@@ -96,30 +102,34 @@ app.get('/dashboard', async (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'))
 })
-app.get("/admin", async (req, res) => {
-  const user = req.session.user;
-  if (!user || !user.is_admin) return res.sendStatus(403);
 
-  const { data: users } = await supabase.from("users").select("id, email, is_admin");
-  res.render("admin", { users });
-});
+app.get("/admin", async (req, res) => {
+  const user = req.session.user
+  if (!user || !user.is_admin) return res.sendStatus(403)
+
+  const { data: users } = await supabase
+    .from("users")
+    .select("id, email, is_admin")
+
+  res.render("admin", { users })
+})
 
 app.post('/make-admin/:id', async (req, res) => {
-  const currentUser = req.session.user;
-  const { id } = req.params;
+  const currentUser = req.session.user
+  const { id } = req.params
 
-  if (!currentUser || !currentUser.is_admin) return res.status(403).send("Alleen admins mogen dit.");
+  if (!currentUser || !currentUser.is_admin) return res.status(403).send("Alleen admins mogen dit.")
 
   const { error } = await supabase
     .from("users")
     .update({ is_admin: true })
-    .eq("id", id);
+    .eq("id", id)
 
-  if (error) return res.status(500).send("Fout bij admin maken.");
-  res.redirect("/admin");
-});
+  if (error) return res.status(500).send("Fout bij admin maken.")
+  res.redirect("/admin")
+})
 
-// === POSTS AANMAKEN ===
+// === POSTS ===
 app.post('/post', async (req, res) => {
   if (!req.session.user) return res.redirect('/login')
   const { content } = req.body
@@ -168,4 +178,4 @@ app.post('/follow/:user_id', async (req, res) => {
   res.redirect('/dashboard')
 })
 
-app.listen(8080, () => console.log('Server gestart op http://localhost:8080'))
+app.listen(8080, () => console.log('✅ Server gestart op http://localhost:8080'))
