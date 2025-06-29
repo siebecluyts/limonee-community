@@ -1,0 +1,16 @@
+<h1>Admin Dashboard</h1>
+<h2>Gebruikers</h2>
+<ul>
+  <% users.forEach(u => { %>
+    <li>
+      <%= u.email %>
+      <% if (!u.is_admin) { %>
+        <form action="/make-admin/<%= u.id %>" method="POST" style="display:inline;">
+          <button>Maak admin</button>
+        </form>
+      <% } else { %>
+        (admin)
+      <% } %>
+    </li>
+  <% }) %>
+</ul>

@@ -1,0 +1,42 @@
+<h2>Welkom <%= user.email %></h2>
+
+<!-- Post maken -->
+<form method="POST" action="/post">
+  <textarea name="content" placeholder="Wat heb je te zeggen?" required></textarea>
+  <button type="submit">Post</button>
+</form>
+
+<hr>
+
+<!-- Posts tonen -->
+<% if (posts && posts.length) { %>
+  <% posts.forEach(p => { %>
+    <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+      <p><b><%= p.email %></b>: <%= p.content %></p>
+
+      <!-- Like knop -->
+      <form method="POST" action="/like/<%= p.id %>">
+        <button type="submit">❤️ Like</button>
+      </form>
+
+      <!-- Comment formulier -->
+      <form method="POST" action="/comment/<%= p.id %>">
+        <input name="content" placeholder="Reageer..." required>
+        <button type="submit">Comment</button>
+      </form>
+
+      <!-- Comments -->
+      <% if (p.comments) { %>
+        <ul>
+          <% p.comments.forEach(c => { %>
+            <li><%= c.email %>: <%= c.content %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>Er zijn nog geen posts</p>
+<% } %>
+
+<a href="/logout">Uitloggen</a>
