@@ -61,7 +61,7 @@ app.post('/login', async (req, res) => {
   res.redirect('/dashboard')
 })
 
-aapp.get('/dashboard', async (req, res) => {
+app.get('/dashboard', async (req, res) => {
   if (!req.session.user) return res.redirect('/login')
 
   // Posts ophalen met gebruiker en comments
